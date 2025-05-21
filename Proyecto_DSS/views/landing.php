@@ -215,6 +215,47 @@
             font-size: 14px;
         }
 
+.cart-item button {
+background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  margin: 0 4px 0 0; /* margin abajo 0 para que no baje */
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 12px;
+  box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+  transition: background-color 0.3s ease, transform 0.15s ease;
+  display: inline-block; /* fuerza que estén alineados */
+  min-width: 28px; /* tamaño fijo y pequeño */
+  text-align: center;
+}
+
+
+.cart-item button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.cart-item button:active {
+   transform: scale(0.95);
+}
+
+/* Botón eliminar */
+.cart-item button:last-of-type {
+ background-color: #ff7f27;
+  box-shadow: 0 2px 4px #ff7f27;
+  min-width: 28px;
+  padding: 4px 8px;
+  margin-left: 8px; /* separación a la izquierda */
+}
+
+.cart-item button:last-of-type:hover {
+ background-color: #a71d2a;
+}
+
+
         .close-btn {
             text-align: right;
             font-weight: bold;
