@@ -14,6 +14,9 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f5f5;
+             margin: 0;
+             padding: 0;
+             overflow-x: hidden;
         }
 
         .topbar {
@@ -54,19 +57,62 @@
 
         .layout {
             display: flex;
-            margin: 20px;
         }
 
         .sidebar {
-            width: 200px;
-            background-color: #e0e0e0;
+        
+            width: 250px;
+            background-color:rgb(255, 255, 255);
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            border-radius: 10px;
-            margin-right: 20px;
-            height: fit-content;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            z-index: 100;
         }
 
+        
+
+        .sidebar h3 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .sidebar hr {
+            border: none;
+            border-top: 2px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    padding: 10px 15px;
+    display: block;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+        .sidebar ul li a:hover {
+    background-color: #ff7f27;
+    color: white;
+}
+
         .products {
+            margin-left: 250px;
+            padding: 30px;
             flex: 3;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -169,6 +215,47 @@
             font-size: 14px;
         }
 
+.cart-item button {
+background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  margin: 0 4px 0 0; /* margin abajo 0 para que no baje */
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 12px;
+  box-shadow: 0 2px 4px rgba(0,123,255,0.3);
+  transition: background-color 0.3s ease, transform 0.15s ease;
+  display: inline-block; /* fuerza que estén alineados */
+  min-width: 28px; /* tamaño fijo y pequeño */
+  text-align: center;
+}
+
+
+.cart-item button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.cart-item button:active {
+   transform: scale(0.95);
+}
+
+/* Botón eliminar */
+.cart-item button:last-of-type {
+ background-color: #ff7f27;
+  box-shadow: 0 2px 4px #ff7f27;
+  min-width: 28px;
+  padding: 4px 8px;
+  margin-left: 8px; /* separación a la izquierda */
+}
+
+.cart-item button:last-of-type:hover {
+ background-color: #a71d2a;
+}
+
+
         .close-btn {
             text-align: right;
             font-weight: bold;
@@ -260,6 +347,11 @@
         .payment-option:hover {
             background: #ff7f27;
         }
+
+        html {
+        scroll-behavior: smooth;
+        }
+
     </style>
     </style>
 </head>
@@ -273,11 +365,18 @@
     <div class="icons">
 
 
-        <?php if (isset($_SESSION['usuario'])): ?>
-                <span>👤 <?= htmlspecialchars($_SESSION['usuario']) ?></span>
-        <?php else: ?>
-                <a href="/login"><span>👤</span></a>
-        <?php endif; ?>
+    
+
+       <?php if (isset($_SESSION['usuario'])): ?>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <span>👤 <?= htmlspecialchars($_SESSION['usuario']) ?></span>
+        <form action="/" method="post" style="margin: 0;">
+            <button type="submit" style="background: none; border: none; color: white; cursor: pointer; font-size: 1rem;">Cerrar sesión</button>
+        </form>
+    </div>
+<?php else: ?>
+    <a href="/login"><span>👤</span></a>
+<?php endif; ?>
 
 
         <span id="cart-icon">🛒</span>
@@ -287,36 +386,44 @@
 
     <div class="layout">
         <div class="sidebar">
-            <h3>Categorías</h3>
-<hr>
-<ul>
-    <li><a href="#" style="text-decoration: none; color: #333;">Ferretería</a></li>
-    <li><a href="#" style="text-decoration: none; color: #333;">Construcción</a></li>
-    <li><a href="#" style="text-decoration: none; color: #333;">Herramientas</a></li>
-    <li><a href="#" style="text-decoration: none; color: #333;">Pinturas</a></li>
-    <li><a href="#" style="text-decoration: none; color: #333;">Electricidad</a></li>
-    <li><a href="#" style="text-decoration: none; color: #333;">Plomería</a></li>
-</ul>
+    <h3>Categorías</h3>
+    <hr>
+    <ul>
+        <li><a href="#herramientas">Herramientas</a></li>
+        <li><a href="#jardinería">Jardinería</a></li>
+        <li><a href="#construcción">Construcción</a></li>
+        <li><a href="#pinturas">Pinturas</a></li>
+        <li><a href="#electricidad">Electricidad</a></li>
+        <li><a href="#plomería">Plomería</a></li>
+    </ul>
         </div>
 
+
+
         <div class="products">
-            <?php foreach ($grouped as $category => $products): ?>
-                <?php foreach ($products as $product): ?>
-                    <div class="product">
-                        <img src="/img/<?= htmlspecialchars($product['imagen']) ?>" alt="<?= htmlspecialchars($product['nombre']) ?>">
-                        <strong><?= htmlspecialchars($product['nombre']) ?></strong>
-                        <p>$<?= number_format($product['precio'], 2) ?></p>
-                        <button class="add-to-cart"
-                                data-id="<?= $product['id'] ?>"
-                                data-name="<?= htmlspecialchars($product['nombre']) ?>"
-                                data-price="<?= $product['precio'] ?>">
-                                
-                            Añadir
-                        </button>
-                    </div>
-                <?php endforeach; ?>
-            <?php endforeach; ?>
+    <?php foreach ($grouped as $category => $products): ?>
+        <div style="grid-column: 1 / -1;">
+            <h2 id="<?= strtolower(str_replace(' ', '-', $category)) ?>" style="margin: 20px 0 10px; color: #2c3e50; border-bottom: 2px solid #ccc; padding-bottom: 5px;">
+                <?= htmlspecialchars($category) ?>
+            </h2>
+
         </div>
+        <?php foreach ($products as $product): ?>
+            <div class="product">
+                <img src="/img/<?= htmlspecialchars($product['imagen']) ?>" alt="<?= htmlspecialchars($product['nombre']) ?>">
+                <strong><?= htmlspecialchars($product['nombre']) ?></strong>
+                <p>$<?= number_format($product['precio'], 2) ?></p>
+                <button class="add-to-cart"
+                        data-id="<?= $product['id'] ?>"
+                        data-name="<?= htmlspecialchars($product['nombre']) ?>"
+                        data-price="<?= $product['precio'] ?>">
+                    Añadir
+                </button>
+            </div>
+        <?php endforeach; ?>
+    <?php endforeach; ?>
+</div>
+
     </div>
 
     <!-- Fondo oscuro -->
@@ -341,6 +448,8 @@
         <button class="payment-option" onclick="proceedToCheckout('tarjeta')">Pago con tarjeta</button>
     </div>
 </div>
+
+
 <script>
     // Carrito como array
     let cart = [];
@@ -452,48 +561,55 @@
         }
     });
 
-    // Función para proceder al pago
-    function proceedToCheckout(paymentMethod) {
-        // Crear formulario dinámico para enviar los datos
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'factura'; // O tu ruta correcta
-        
-        // Añadir campo de método de pago
-        const methodInput = document.createElement('input');
-        methodInput.type = 'hidden';
-        methodInput.name = 'payment_method';
-        methodInput.value = paymentMethod;
-        form.appendChild(methodInput);
-        
-        // Añadir cada producto al formulario
-        cart.forEach((item, index) => {
-            const nameInput = document.createElement('input');
-            nameInput.type = 'hidden';
-            nameInput.name = `products[${index}][name]`;
-            nameInput.value = item.name;
-            form.appendChild(nameInput);
-            
-            const priceInput = document.createElement('input');
-            priceInput.type = 'hidden';
-            priceInput.name = `products[${index}][price]`;
-            priceInput.value = item.price;
-            form.appendChild(priceInput);
-            
-            const qtyInput = document.createElement('input');
-            qtyInput.type = 'hidden';
-            qtyInput.name = `products[${index}][quantity]`;
-            qtyInput.value = item.quantity;
-            form.appendChild(qtyInput);
-        });
-        
-        // Enviar formulario
-        document.body.appendChild(form);
-        form.submit();
-    }
-    // Cerrar modal
+    // Cierra el modal
     function closePaymentModal() {
         document.getElementById('payment-modal').style.display = "none";
+    }
+
+    // Redirige según el método de pago seleccionado
+    function proceedToCheckout(paymentMethod) {
+        if (paymentMethod === 'efectivo') {
+            // Crear formulario dinámico para enviar los datos
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'factura'; // Ruta para pago en efectivo
+            
+            // Añadir campo de método de pago
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = 'payment_method';
+            methodInput.value = paymentMethod;
+            form.appendChild(methodInput);
+            
+            // Añadir cada producto al formulario
+            cart.forEach((item, index) => {
+                const nameInput = document.createElement('input');
+                nameInput.type = 'hidden';
+                nameInput.name = `products[${index}][name]`;
+                nameInput.value = item.name;
+                form.appendChild(nameInput);
+                
+                const priceInput = document.createElement('input');
+                priceInput.type = 'hidden';
+                priceInput.name = `products[${index}][price]`;
+                priceInput.value = item.price;
+                form.appendChild(priceInput);
+                
+                const qtyInput = document.createElement('input');
+                qtyInput.type = 'hidden';
+                qtyInput.name = `products[${index}][quantity]`;
+                qtyInput.value = item.quantity;
+                form.appendChild(qtyInput);
+            });
+            
+            // Enviar formulario
+            document.body.appendChild(form);
+            form.submit();
+        } else if (paymentMethod === 'tarjeta') {
+            // Guardar datos para pago con tarjeta y redirigir
+            sessionStorage.setItem('checkoutCart', JSON.stringify(cart));
+            window.location.href = 'checkout'; // Página para pago con tarjeta
+        }
     }
 </script>
 
