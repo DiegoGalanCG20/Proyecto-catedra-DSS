@@ -31,7 +31,7 @@ $router->get('/checkout', [$checkout, 'form']);
 $router->post('/checkout', [$checkout, 'process']);
 $router->get('/login', [$auth, 'login']);
 $router->post('/login', [$auth, 'login']);
-$router->get(path: '/factura', handler: [$factura, 'mostrarFactura']);
-$router->post(path: '/factura', handler: [$factura, 'mostrarFactura']);
+$router->get( '/factura', [$factura, 'mostrarFactura']);
+$router->post( '/factura',  [$factura, 'mostrarFactura']);
 
 $router->run();

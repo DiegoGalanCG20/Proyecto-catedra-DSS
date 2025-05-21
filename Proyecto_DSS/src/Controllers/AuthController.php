@@ -2,13 +2,38 @@
 
 namespace App\Controllers;
 
-use App\Core\Database;
-use PDO;
-
 class AuthController {
+
+public function logout() {
+    session_unset();
+    session_destroy();
+    header("Location: /");
+    exit;
+}
+
+
+
+
+
     public function login() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         $emailError = $passwordError = "";
         $email = $password = "";
+
+        // Usuarios definidos directamente
+        $usuarios = [
+            'admin1@ferreteria.com' => [
+                'nombre' => 'Admin Uno',
+                'password' => 'admin123'
+            ],
+            'cliente@ferreteria.com' => [
+                'nombre' => 'Cliente Demo',
+                'password' => 'demo456'
+            ]
+        ];
 
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $valid = true;
@@ -31,15 +56,9 @@ class AuthController {
             }
 
             if ($valid) {
-                $pdo = Database::connection();
-                $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE correo = :correo");
-                $stmt->bindParam(':correo', $email);
-                $stmt->execute();
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                if ($user && $user['password'] === $password) {
-                    $_SESSION['usuario'] = $user['nombre'];
-                    header("Location: /landing"); // ← Redirige correctamente a la landing
+                if (isset($usuarios[$email]) && $usuarios[$email]['password'] === $password) {
+                    $_SESSION['usuario'] = $usuarios[$email]['nombre'];
+                    header("Location: ./"); // Redirige a landing
                     exit;
                 } else {
                     $passwordError = "Credenciales incorrectas.";

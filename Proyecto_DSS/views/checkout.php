@@ -320,7 +320,7 @@ document.getElementById('cancelButton').addEventListener('click', function() {
    // Botón pagar
 document.getElementById('pagarButton').addEventListener('click', function() {
     if (confirm('Pago procesado con éxito (simulación)')) {
-        window.location.href = 'factura';
+        window.location.href = './';
     }
 });
 

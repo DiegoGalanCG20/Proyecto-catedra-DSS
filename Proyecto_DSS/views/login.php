@@ -106,7 +106,7 @@
 
 <div class="login-box">
     <img src="/img/logoferre.png" alt="Logo">
-    <form method="POST" action="/auth/login"> <!-- Aquí la ruta que maneja el controlador -->
+    <form method="POST" action="./"> <!-- Aquí la ruta que maneja el controlador -->
         <div class="input-group">
             <span class="input-icon">📧</span>
             <input type="text" name="email" placeholder="Correo electrónico" value="<?= isset($_SESSION['email']) ? htmlspecialchars($_SESSION['email']) : '' ?>">
